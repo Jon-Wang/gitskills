@@ -1,0 +1,82 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+</head>
+
+<body>
+<form>
+	名:<input type="text" name="firstname">
+	<br>
+	姓:<input type="text" namee="lastname">
+	<br>
+	<input type="submit" value="Submit">
+</form>
+<hr>
+<p>多数情况下被用到的表单标签是输入标签（input）。输入类型是由类型属性（type）定义的</p>
+<hr>
+<h3>密码域:password;文本域:text</h3>
+<form>
+	用户:<input type="text" name="user">	
+	<br>
+	密码:<input type="password" name="password">
+</form>
+<hr>
+<h3>复选框：checkbox</h3>
+<form>
+	我喜欢自行车<input type="checkbox" name="bike">
+	<br>
+	我喜欢汽车<input type="checkbox" name="bike">
+</form>
+<hr>
+<h3>单选按钮:radio</h3>
+<form>
+	男性:<input type="radio" checked="checked" name="Sex" value="male">
+	<br>
+	女性:<input type="radio" name="Sex" value="female">
+</form>
+<hr>
+<h3>简单的下拉列表:用到选择标签select</h3>
+<form>
+	<select name="星期">
+		<option value="周一">周一</option>
+		<option value="周二">周二</option>
+		<option value="周三">周三</option>
+		<option value="周四">周四</option>		
+		<option value="周五">周五</option>
+		<option value="周六">周六</option>
+		<option value="周日">周日</option>						
+	</select>
+</form>
+<hr>
+<h3>带有预选值的下拉列表:</h3>
+<form>
+	<select name="国籍">
+		<option value="荷兰">荷兰</option>
+		<option value="法国">法国</option>
+		<option value="中国" selected="selected">中国</option>
+		<option value="德国">德国</option>		
+					
+	</select>
+</form>
+<hr>
+<p>多行文本输入控件textarea,用户可在文本域中写入文本。可写入字符的字数不受限制。</p>
+<textarea rows="10" cols="30">
+我想说：
+</textarea>
+<hr>
+<h3>创建按钮</h3>
+<form>
+	<input type="button" value="赞">
+</form>
+<hr>
+<p>数据周围绘制一个带标题的框:fieldset</p>
+<form>
+	<fieldset>
+		<legend>健康信息</legend>
+		身高:<input type="text">
+		体重:<input type="text">		
+	</fieldset>
+</form>
+
+</body>
+</html>

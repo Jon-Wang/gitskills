@@ -1,0 +1,225 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>11表格</title>
+</head>
+<body>
+
+<a href="#一行一列">跳转到一行一列</a>
+<p>每个表格由 table 标签开始。</p>
+<p>每个表格行由 tr 标签开始。</p>
+<p>每个表格数据由 td 标签开始。</p>
+<p>根据表格的内容自动匹配表格的大小,border属性定义表格边框宽度</p>
+
+<h4><a name="一行一列">一行一列：</a></h4>
+<table border="1">
+  <tr>
+    <td>100</td>
+  </tr>
+</table>
+
+<h4>一行三列：</h4>
+<table border="1">
+  <tr>
+    <td>nice to meet you</td>
+    <td>200,400</td>
+    <td>300</td>
+  </tr>
+</table>
+
+<h4>两行三列：</h4>
+<table border="1">
+  <tr>
+    <th>姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>两行三列：(加背景颜色bgcolor)</h4>
+<table border="1" bgcolor="red">
+  <tr>
+    <th>姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>两行三列：(加背景图片background)</h4>
+<table border="1" background="C:\Users\lenovo\Desktop\HTML\picture\8.png">
+  <tr>
+    <th>姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>两行三列：(单元格加背景颜色bgcolor和图片background)</h4>
+<table border="1" >
+  <tr>
+    <th bgcolor="red">姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td background="C:\Users\lenovo\Desktop\HTML\picture\8.png">General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>两行三列:(单元格填充cellpadding)</h4>
+<table border="1" cellpadding="10">
+  <tr>
+    <th>姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>两行三列:(单元格间距cellspacing)</h4>
+<table border="1" cellspacing="10">
+  <tr>
+    <th>姓名</th>
+    <th>电话</th>
+    <th>电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<h4>三行两列：</h4>
+<table border="1">
+  <caption>用户信息：</caption>
+  <tr>
+    <th>姓名</th>
+    <td>General_j</td>
+  </tr>
+  <tr>
+    <th>电话</th>
+    <td>555 77 888</td>
+  </tr>
+  <tr>
+    <th>电话</th>
+    <td>666 77 888</td>  
+  </tr>
+</table>
+<p>一个 table 对应一个表格，一个 tr 对应一行，一个td对应每行的一个内容，一个th对应每行的一个表头,caption表示表格标题</p>
+
+<h4>跨列的单元格：</h4>
+<table border="1">
+  <tr>
+    <th>姓名</th>
+    <th colspan="2">电话</th>
+  </tr>
+  <tr>
+    <td>General_j</td>
+    <td>555 77 888</td>
+    <td>666 77 888</td>
+  </tr>
+</table>
+
+<p>colspan定义跨列，rowspan定义跨行</p>
+
+<h4>跨行的单元格：</h4>
+<table border="1">
+  <caption>用户信息：</caption>
+  <tr>
+    <th>姓名</th>
+    <td>General_j</td>
+  </tr>
+  <tr>
+    <th rowspan="2">电话</th>
+    <td>555 77 888</td>
+  </tr>
+  <tr>
+    <td>666 77 888</td>  
+  </tr>
+</table>
+
+<h4>表格内的标签：</h4>
+<table border="1">
+  <caption>表1：表格内的标签</caption>
+  <tr>
+    <td>
+      <p>这是第一个段落</p>
+      <p>这是第二个段落</p>
+    </td>
+    <td>
+      <p>再插入一个表格</p>
+      <table border="2">
+        <tr>
+          <td>A</td>
+          <td>B</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>D</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td>这个单元包含一个链接:
+      <p><a href="http://cn.bing.com" target="_blank">bing.</a></p>
+    </td>
+    <td>这个单元包含一个列表：
+      <ul>
+        <li>苹果</li>
+        <li>香蕉</li>
+        <li>菠萝</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+<p>使用 "frame" 属性来控制围绕表格的边框,值为box,above,below,hsides,vsides</p>
+<table width="400" border="1" cellpadding="8" frame="box">
+  <caption>表2</caption>
+  <tr>
+    <th align="left">消费项目</th>
+    <th align="right">一月</th>
+    <th align="right">二月</th>
+  </tr>
+  <tr>
+    <td align="left">衣服</td>
+    <td align="right">$30.00</td>
+    <td align="right">$44.45</td>
+  </tr>
+  <tr>
+    <td align="left">食物</td>
+    <td align="right">$730.00</td>
+    <td align="right">$644.45</td>
+  </tr>
+  <tr>
+    <th align="left">总计</th>
+    <th align="right">$760.00</th>
+    <th align="right">$688.45</th>
+  </tr>
+</table>
+
+</body>
+</html>

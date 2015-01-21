@@ -1,0 +1,170 @@
+<html>
+
+<body>
+
+<p>pre 标签很适合显示计算机代码：</p>
+<p>綜合程序-CPU读取  主程序</p>
+<pre>
+/* ************************************************************************
+
+							綜合程序-CPU读取  主程序
+
+***************************************************************************
+ 名称：綜合程序-CPU读取  主程序
+ 时间：2014.04.30
+ 内容：本程序包括：
+       CPU卡读写、PSAM卡读写、M1卡读写
+ 说明：M1卡/CPU卡操作流程优化，对操作流程进行封装(其中卡类型、语音提示根据UID自定义)
+	   綜合程序优化，主要是简化 2014 04-30 12:00
+*************************************************************************** */
+#include "system.h"
+#include "uart.h"
+#include "card.h"
+#include "ch453.h"
+#include "delay.h"
+#include "yuyin.h"
+#include "function.h"
+#include "ds1302.h"
+#include "S29AL016J.h"
+#include "interflash.h"
+//-----------------------------------------------------
+sbit    CH453_KEY = P1^3;
+unsigned char KEY_NUM; //存储按键值
+
+//-----------------------------------------------------
+//main()主函數
+//-----------------------------------------------------
+void main()
+{
+	unsigned char i;
+	Init_Device();    //系统初始化
+
+	SFRPAGE = CONFIG_PAGE;
+	P5 = 0x06;
+	SFRPAGE = LEGACY_PAGE;
+
+	status = Get_S29AL016J_ID( Manufacturer_ID ); //0x01
+	status = Get_S29AL016J_ID( Device_ID); //0x49
+
+//	FLASH_PageErase(0x80,1);	//内部flash擦除
+	i = FLASH_ByteRead(0x80,1);//内部flash,用于存储消费次数，标志消费数据在flash中的存储位置
+
+//	sector_erase(SA4_erase,SA4_program); 					 //擦除第n个扇区
+
+//	i=sector_read(sector_addr_SA4+0xff,SA4_program);
+
+//	program_write(sector_addr_SA4+0xff,SA4_program,0x00);//第n个扇区SAn写入数据,sector_addr_SAn为扇区首地址，SAn_program为高地址线，0xxx为首地址开始写入的数据
+
+//	i=sector_read(sector_addr_SA4+0xff,SA4_program);
+ 		 
+	chip_reset();
+
+	CH453_buf_write(CH453_DIG7 | 0x40,CH453_S);delay_us( 1 );	    	//個位
+	CH453_buf_write(CH453_DIG9 | 0x40,CH453_S);delay_us( 1 );	        //十位
+	CH453_buf_write(CH453_DIG10 | 0x40,CH453_S);delay_us( 1 );			//百位
+	CH453_buf_write(CH453_DIG11 | 0x40,CH453_S);delay_us( 1 );			//千位	
+	CH453_buf_write(CH453_DIG12 | 0x40,CH453_S);delay_us( 1 );	    	//万位
+
+	BlackList_To_Sram();												//上电后，把黑名单从flash中读出，存入Sram
+
+	CH453_buf_write(CH453_DIG7 | 0x00,CH453_S);delay_us( 1 );	    	//個位
+	CH453_buf_write(CH453_DIG9 | 0x00,CH453_S);delay_us( 1 );	        //十位
+	CH453_buf_write(CH453_DIG10 | 0x00,CH453_S);delay_us( 1 );			//百位
+	CH453_buf_write(CH453_DIG11 | 0x00,CH453_S);delay_us( 1 );			//千位	
+	CH453_buf_write(CH453_DIG12 | 0x00,CH453_S);delay_us( 1 );	    	//万位
+	//---------------------------------------------------------------------
+	while ( 1 )
+	{
+
+		DS1302_PLAY_TIME();   					//1302时间显示
+
+		clear_consume++;
+		if(clear_consume>5)//clear consume
+		{
+			for (i = 7;i<13;i++ )
+			{	
+				CH453_buf_index(i,0,CH453_S);  //读卡结束后，消费余额人为清空
+			}
+			clear_consume=0;
+		}
+
+		
+		CARD_CONNECT_Enable();					//连接卡片
+		Uart1_Judge_received();	
+		//-------------------------------------------------
+		if(Buffer_Uart1_Rec[3] == 0xC0)					//连卡正确，则存储UID
+		{
+			for (i = 0;i<4;i++)                	//存储4Hex的UID
+			{
+				CARD_UID_buffer[i] = Buffer_Uart1_Rec[i+9];
+			}
+		}
+    	//-------------M1卡消费流程--------------------------
+		M1_Operation_Process();					//M1卡消费流程
+		
+		//------------CPU卡消费流程--------------------------
+		CPU_Operation_Process();				//CPU卡消费流程
+
+		if((Buffer_Uart1_Rec[3]==0x00)&&(Buffer_Uart1_Rec[4]==0x00)&&(Buffer_Uart1_Rec[5]==0x08))//此卡為2.4G卡
+		{
+			if( Uart1_Received_Flag == 1)   	   //表示串口接收完毕，正常退出(上一条指令) 
+			{	
+				CPU_SELECT_3F01(); 				   //选择 3F01	
+				Uart1_Judge_received();	
+				//-----------------------------------
+				if( Uart1_Received_Flag == 1)      //表示串口接收完毕，正常退出(上一条指令) 
+				{	
+					CPU_GET_FACTOR();  			   //获取分散因子
+					Uart1_Judge_received();		
+					//------------------------------------
+					if( Uart1_Received_Flag == 1)  //表示串口接收完毕，正常退出(上一条指令) 
+					{	
+						CPU_INIT_LOAD();  		   //圈存初始化
+						Uart1_Judge_received();	
+						remaining_sum = ((Buffer_Uart1_Rec[5])*16*16+Buffer_Uart1_Rec[6])*65536+(Buffer_Uart1_Rec[7])*16*16+Buffer_Uart1_Rec[8];//存储消费余额
+						Display_Remaining_Sum(remaining_sum); //显示消费余额
+						yuyin_play(0x00);
+					}
+			    }
+		   	 }
+		}
+
+	} //while(1);
+    //----------------------------------------------------------------------
+}//main();
+
+//-----------------------------------------------------------------------
+//INT1中断处理函数，用来检测按键
+//中断中的函数由于会有WARNING L15的重入警告，所以中断中单独定义了_ISR的函数防止重入
+//-----------------------------------------------------------------------
+void INT1_ISR() interrupt 2            //中断1的中断函数
+{
+	KEY_NUM=CH453_Read_ISR(CH453_F);		//当按键被按下时，读取按键值
+	//-----------------------------------------------------
+	switch(KEY_NUM)
+			{
+				case 0x41:				 		
+  			    		l_tmpdate[3]++;		//l_tmpdate[3]存储时间(日)
+						//DS1302_MODIFY_TIME_ISR(3);//把修改后的值写入DS1302时间-日(3)寄存器
+						break; 
+			    case 0x42: 					
+						l_tmpdate[3]--;
+						//DS1302_MODIFY_TIME_ISR(3);
+						break; 
+	 			case 0x43:						
+						l_tmpdate[4]++;		//l_tmpdate[4]存储时间(月)
+						//DS1302_MODIFY_TIME_ISR(4);//把修改后的值写入DS1302时间-月(4)寄存器
+						break; 
+	 			case 0x44: 					
+						l_tmpdate[4]--;
+						//DS1302_MODIFY_TIME_ISR(4);
+						break; 
+	  			default:						
+	       			    break; 
+	  		}//switch(KEY_NUM);
+		  //--------------------------------------------------------
+}
+</pre>
+
+</body>
+</html>
